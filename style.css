@@ -3,9 +3,24 @@
   text-align: center;
   color: white;
   background-color: rgb(66, 66, 66);
+  margin-bottom: 0px;
 }
 
-.container {
+#jumboContainer {
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+.wrapper {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#fiveDay {
+  float: inline-end;
+}
+
+/* #mainLeft {
+  margin-left: 20px;
+  margin-right: 20px;
+} */

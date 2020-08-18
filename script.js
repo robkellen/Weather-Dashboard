@@ -9,12 +9,33 @@ function getLocalStorage(key) {
 //declaring HTML variables
 const geoLocation = document.getElementById("#todayForecast")
 const todaysDate = moment().format("M-DD-YYYY");
+const weatherIcon = "";
+const city = $("#cityInput").val();
 
+//function to create city search list
+function generateCityList (citySearch){
+  //clear contents of searchList UL
+  $("#searchList").empty();
+
+  const keys = Object.keys(citySearch);
+  for (let i = 0; i < keys.length; i++) {
+   
+    //create a new button for each city searched 
+    const searchEntry = $("<button>");
+    searchEntry.addClass("list-group-item list-action-item")
+    const city = $("#cityInput").val();
+    //append name of city searched to button in list
+    searchEntry.text(city);
+    //append searched city to list
+    $("#searchList").append(searchEntry);
+    
+  }
+}
 
 //execute the following function after page is fully loaded
 $(document).ready(function () { 
   //adding current date to header of today's forecast
-  $("#currentDate").text(todaysDate);
+  $("#currentDate").text(" (" + todaysDate + ")");
 
   //event function to trigger the AJAX call for city that user searches
   $("#findCity").on("click", function(event){
@@ -31,11 +52,22 @@ $(document).ready(function () {
       method: "GET"
     }).then(function(response){
       //console logging queryURL
-      console.log(queryURL);
+      // console.log(queryURL);
       //console logging resulting object
       console.log(response);
+      //console logging lattitude for searched city
+      console.log(response.coord.lat);
+      //console logging longitude for searched city
+      console.log(response.coord.lon);
+      //creating variables for longitude/latitude 
+      const long = response.coord.lon;
+      const lat = response.coord.lat;
 
+      
     })
+  
+
+
   })
 
 

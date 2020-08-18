@@ -25,15 +25,19 @@
       <div class="row">
         <div id="mainLeft" class="col-sm-3">
           <h3>Search for a city:</h3>
-          <form action=""></form>
-          <input type="text" id="cityInput">
-          <button type="button" id="findCity" class="btn btn-info">
-          <span class="glyphicon glyphicon-search"></span>Search</button>
+          <form class="form-inline">
+            <div class="form-group">
+              <input type="text" id="cityInput">
+              <button type="button" id="findCity" class="btn btn-info">
+              <span class="glyphicon glyphicon-search"></span>Search</button>
+            </div>
+          </form>
+          <ul id="searchList"></ul>
         </div>
         <div id="mainRight"class="col-sm-9">
           <div class="row">
             <div class="col-12 card">
-              <h1 id="todayForecast" class="currentCity">Cave Creek<span id="currentDate"></span><span id="currentWeatherIcon"></span></h1>
+              <h1 id="todayForecast" class="currentCity"><span id="currentDate"></span><img id="currentWeatherIcon"></img></h1>
             </div>
           </div>
           <div id="fiveDay" class="row">

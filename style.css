@@ -30,6 +30,10 @@
   width: 75%;
 }
 
+ul {
+  list-style: none;
+}
+
 #mainRight {
   margin-top: 0px;
   padding-left: 25px;

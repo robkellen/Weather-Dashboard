@@ -7,10 +7,10 @@ function getLocalStorage(key) {
 }
 
 //declaring HTML variables
-const geoLocation = document.getElementById("#todayForecast")
 const todaysDate = moment().format("M-DD-YYYY");
-const weatherIcon = "";
-const city = $("#cityInput").val();
+
+
+
 
 //function to create city search list
 function generateCityList (citySearch){
@@ -22,8 +22,9 @@ function generateCityList (citySearch){
    
     //create a new button for each city searched 
     const searchEntry = $("<button>");
-    searchEntry.addClass("list-group-item list-action-item")
-    const city = $("#cityInput").val();
+    searchEntry.addClass("list-group-item list-group-item-action")
+
+    // const city = $("#cityInput").val();
     //append name of city searched to button in list
     searchEntry.text(city);
     //append searched city to list
@@ -32,20 +33,25 @@ function generateCityList (citySearch){
   }
 }
 
-//execute the following function after page is fully loaded
-$(document).ready(function () { 
+function generateCityWeather (city, citySearch) {
+
+  
   //adding current date to header of today's forecast
   $("#currentDate").text(" (" + todaysDate + ")");
-
+  
   //event function to trigger the AJAX call for city that user searches
   $("#findCity").on("click", function(event){
     event.preventDefault();
     //collecting the text from the input box
     const city = $("#cityInput").val();
-
+    const lat;
+    const long;
+    
     const apiKey = "858f8ba5cfd6fd435f1cd0d521850b4d"
     //url for the AJAX call query including user input and API key
     const queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + ",&appid=" + apiKey;
+    
+    
     //running AJAX call to OpenWeatherMap API
     $.ajax({
       url: queryURL,
@@ -59,17 +65,15 @@ $(document).ready(function () {
       console.log(response.coord.lat);
       //console logging longitude for searched city
       console.log(response.coord.lon);
-      //creating variables for longitude/latitude 
-      const long = response.coord.lon;
-      const lat = response.coord.lat;
-
+      
+      
       
     })
-  
-
-
+    
+    
+    
   })
-
-
   
-});
+  
+  
+}

@@ -23,39 +23,31 @@
 
     <div id="mainContent" class="container-fluid">
       <div class="row">
-        <div id="mainLeft" class="col-md-4">
+        <div id="mainLeft" class="col-sm-3">
           <h3>Search for a city:</h3>
           <input type="text" id="city">
-          <i class="fa fa-search"></i>
+          <button type="button" class="btn btn-info">
+          <span class="glyphicon glyphicon-search"></span>Search</button>
         </div>
-        <div id="mainRight"class="col-md-8">
+        <div id="mainRight"class="col-sm-9">
           <div class="row">
             <div class="col-12 card">
-              <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Est
-              doloribus perspiciatis eius mollitia aut quas totam dignissimos
-              sint accusamus, beatae possimus pariatur placeat corporis. Eum
-              consequuntur dignissimos sunt assumenda aliquam?Voluptate eum ea
-              voluptatum est quisquam quia soluta excepturi nostrum blanditiis,
-              sapiente, recusandae maxime voluptatibus sequi repudiandae
-              asperiores odit nobis in? Recusandae laborum alias laboriosam
-              beatae quae praesentium nobis accusamus!
-              </p>
+              <h1 id="todayForecast" class="currentCity"><span id="currentDate"></span><span id="currentWeatherIcon"></span></h1>
             </div>
           </div>
           <div id="fiveDay" class="row">
-            <div class="col">One</div>
-            <div class="col">Two</div>
-            <div class="col">Three</div>
-            <div class="col">Four</div>
-            <div class="col">Five</div>
+            <div id="fiveDay1" class="col">One</div>
+            <div id="fiveDay2" class="col">Two</div>
+            <div id="fiveDay3" class="col">Three</div>
+            <div id="fiveDay4" class="col">Four</div>
+            <div id="fiveDay5" class="col">Five</div>
           </div>
         </div>
       </div>
       
     </div>
 
-    <script src="https://kit.fontawesome.com/34e00cff3c.js" crossorigin="anonymous"></script>
+  
     <script
       src="https://code.jquery.com/jquery-3.5.1.js"
       integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="

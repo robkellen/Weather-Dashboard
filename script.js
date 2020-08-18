@@ -6,10 +6,12 @@ function getLocalStorage(key) {
   }
 }
 
+//declaring HTML variables
 const geoLocation = {};
-
+const todaysDate = moment().format("MM-DD-YYYY");
 
 //execute the following function after page is fully loaded
-$(document).ready(function () {
-
-}
+$(document).ready(function () { 
+  //adding current date to header of today's forecast
+  $("#currentDate").text(todaysDate);
+});

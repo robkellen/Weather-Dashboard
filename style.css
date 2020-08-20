@@ -38,3 +38,11 @@ ul {
   margin-top: 0px;
   padding-left: 25px;
 }
+
+#todayForecast {
+  text-align: justify;
+}
+
+#currentHeader {
+  margin-left: 100px;
+}

@@ -3,7 +3,21 @@ var city;
 var humidity;
 var uvIndex;
 var windspeed;
+var iconURL;
 
+//ask user to allow access to location
+function geoLocation (){
+  navigator.geolocation();
+}
+
+function startPoint (){
+  //if user declines provide weather info for Cave Creek, AZ
+  if (!navigator.geolocation) {
+    getCurrent("Chicago");
+  } else {
+    navigator.geolocation.getCurrentPosition(allowed, denied);
+  }
+}
 
 function allowed (position){
   
@@ -22,7 +36,7 @@ function allowed (position){
     
   });
 }
-
+//if user blocks permission to access location set default weather to city of Chicago
 function denied (){
   city = "Chicago";
   getCurrent(city);
@@ -47,26 +61,26 @@ function getCurrent(city) {
     console.log(queryURL);
     //console logging resulting object
     console.log(response);
+
+    //set current city and append to HTML
     const city = (response.name);
     $("#currentCity").text(city)
+    //set current date and append to HTML
     const todayDate = moment().format(" (M-D-YYYY) ");
     $("#currentDate").text(todayDate);
+    //set weather icon and append to HTML
+    const iconURL = "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png";
+    const iconDiv = $("<div>").attr("class", "col-md-3").append($("<img>").attr("src", iconURL).attr("class", "card-img"));
+    $("#iconHere").append(iconDiv);
+
+    
 
 });
 }
-//ask user to allow access to location
-function geoLocation (){
-  navigator.geolocation();
-}
 
-function startPoint (){
-  //if user declines provide weather info for Cave Creek, AZ
-  if (!navigator.geolocation) {
-    getCurrent("Chicago");
-  } else {
-    navigator.geolocation.getCurrentPosition(allowed, denied);
-  }
-}
+
+
+
 
 
 

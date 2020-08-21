@@ -106,10 +106,13 @@ function getCurrent(city) {
     const city = response.name;
     const todayDate = moment().format(" (M-D-YYYY) ");
     //create div to hold daily data
-    const currForecast = $("<div>").attr("class", "card");
-    $("#mainRight").append(currForecast);
+    const currForecast = $("<div>").attr("class", "col");
+    $("#currentRow").append(currForecast);
     //add location & date to card header
-    $("<div>").attr("class", "card-header");
+    const cardHead = $("<div>").attr("class", "card-header").attr("id", "cardHeader");
+    currForecast.append(cardHead);
+    const cityHead = $("<h5>").text(city);
+    cardHead.append(cityHead);
 
     const cardRow = $("<div>").attr("class", "row");
     currForecast.append(cardRow);
@@ -123,9 +126,10 @@ function getCurrent(city) {
     const iconDiv = $("<div>")
       .attr("class", "col-md-3")
       .append($("<img>").attr("src", iconURL).attr("class", "card-img"));
-    $("#cardRow").append(iconDiv);
+    cardRow.append(iconDiv);
 
     const textDiv = $("<div>").attr("class", "col-md-8")
+    cardRow.append(textDiv);
     const cardBody = $("<div>").attr("class", "card-body");
     textDiv.append(cardBody);
     cardBody.append($("<h3>").attr("class", "card-title").text(city + todayDate));
@@ -281,12 +285,12 @@ $("#findCityBtn").on("click", function (event) {
     currentLoc = loc;
     saveCitySearch(loc);
 
-    getCurrent(loc);
   }
+  getCurrent(city);
 });
 
 
-$("#d")
+
 
 // function saveCitySearch ()
 

@@ -1,4 +1,5 @@
 var savedLocations = [];
+var searchedCities;
 
 //ask user to allow access to location
 function geoLocation() {
@@ -6,11 +7,47 @@ function geoLocation() {
 }
 
 function startPoint() {
-  //if user declines provide weather info for Cave Creek, AZ
-  if (!navigator.geolocation) {
-    getCurrent("Chicago");
+  //check local storage for previously searched and stored locations
+  const savedLocations = JSON.parse(localStorage.getItem(searchedCities));
+  var lastSearch;
+  if (savedLocations) {
+    //
+    currentLoc = savedLocations(savedLocations.length - 1);
   } else {
-    navigator.geolocation.getCurrentPosition(allowed, denied);
+    //if user declines provide weather info for Cave Creek, AZ
+    if (!navigator.geolocation) {
+      getCurrent("Chicago");
+    } else {
+      navigator.geolocation.getCurrentPosition(allowed, denied);
+    }
+  }
+}
+
+function showPrevious() {
+  //show most recent searched city's info
+  if (savedLocations) {
+    $("#prevSearches").empty();
+
+    const cityBtns = $("<div>").attr("class", "list-group");
+    //create new list item of a button for city searched.
+    for (let i = 0; i < savedLocations.length; i++) {
+      const locButton = $("<a>")
+        .attr("href", "#")
+        .attr("id", "locationButtons")
+        .text(savedLocations[i]);
+      if (savedLocations[i] == currentLoc) {
+        locButton.attr(
+          "class",
+          "list-group-item list-group-item-action active"
+        );
+      } else {
+        locButton.attr("class", "list-group-item list-group-item-action");
+      }
+      //place current search button at top of list
+      cityBtns.prepend(locButton);
+      //append to HTML
+      $("#prevSearches").append(cityBtns);
+    }
   }
 }
 
@@ -56,6 +93,10 @@ function getCurrent(city) {
   $.ajax({
     url: queryURL,
     method: "GET",
+    error: function () {
+      savedLocations.splice(savedLocations.indexOf(city), 1);
+      localStorage.setItem("searchedCities", JSON.stringify(savedLocations));
+    },
   }).then(function (response) {
     //console logging queryURL
     console.log(queryURL);
@@ -126,7 +167,7 @@ function getCurrent(city) {
       }
       if (uvIndex >= 6 || uvIndex <= 8) {
         indexColor = "orange";
-      } 
+      }
       if (uvIndex > 9) {
         indexColor = "red";
       }
@@ -139,7 +180,6 @@ function getCurrent(city) {
           .text(uvIndex)
       );
       $("#currentStats").append(displayUvi);
-
     });
     getForecast(response.id);
   });
@@ -168,23 +208,73 @@ function getForecast(city) {
         //create new card to display forecast info for each day
         const newCard = $("<div>").attr("class", "card text-white bg-primary");
         newCol.append(newCard);
-        //create header for new card and display 
-        var cardHeader = $("<div>").attr("class", "card-header").text(moment(forecast.list[i].dt, "X").format("MMM Do"));
+        //create header for new card and display
+        var cardHeader = $("<div>")
+          .attr("class", "card-header")
+          .text(moment(forecast.list[i].dt, "X").format("MMM Do"));
         newCard.append(cardHeader);
         //append icon for weather to cards
-        var cardImg = $("<img>").attr("class", "card-img-top").attr("src", "https://openweathermap.org/img/wn/" + forecast.list[i].weather[0].icon + "@2x.png");
+        var cardImg = $("<img>")
+          .attr("class", "card-img-top")
+          .attr(
+            "src",
+            "https://openweathermap.org/img/wn/" +
+              forecast.list[i].weather[0].icon +
+              "@2x.png"
+          );
         newCard.append(cardImg);
         //new div to hold info for text/humidity on each card of forecast
         var bodyDiv = $("<div>").attr("class", "card-body");
         newCard.append(bodyDiv);
         //
-        bodyDiv.append($("<p>").attr("class", "card-text").html("Temp: " + forecast.list[i].main.temp + " °F"));
-        bodyDiv.append($("<p>").attr("class", "card-text").text("Humidity: " + forecast.list[i].main.humidity + "%"));
+        bodyDiv.append(
+          $("<p>")
+            .attr("class", "card-text")
+            .html("Temp: " + forecast.list[i].main.temp + " °F")
+        );
+        bodyDiv.append(
+          $("<p>")
+            .attr("class", "card-text")
+            .text("Humidity: " + forecast.list[i].main.humidity + "%")
+        );
+      }
     }
-
-  };
-});
+  });
 }
+
+function clear() {
+  //clear previous weather info
+  $("#rightMain").empty();
+}
+
+$("#findCityBtn").on("click", function (event) {
+  //prevent default refresh
+  event.preventDefault();
+  //take value from user input
+  const loc = $("#cityInput").val().trim();
+  if (loc !== "") {
+    //clear previous forecast data
+    clear();
+    currentLoc = loc;
+    saveCitySearch(loc);
+
+    getCurrent(loc);
+  }
+});
+
+var loc;
+function saveCitySearch() {
+  //if none add this city to new array
+  if (savedLocations === null) {
+    savedLocations = [loc];
+  } else if (savedLocations.indexOf(loc) === -1) {
+    savedLocations.push(loc);
+  }
+  localStorage.setItem("searchedCities", JSON.stringify(savedLocations));
+  showPrevious();
+}
+
+$("#d")
 
 // function saveCitySearch ()
 

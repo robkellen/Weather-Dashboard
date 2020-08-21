@@ -158,7 +158,32 @@ function getForecast(city) {
     method: "GET",
   }).then(function (forecast) {
     console.log(forecast);
-  });
+
+    for (let i = 0; i < forecast.list.length; i++) {
+      //start for loop at index 0 of forecast list and search for upcoming dates at time of 15:00
+      if (forecast.list[i].dt_txt.indexOf("15:00:00") !== -1) {
+        //create new column for each day of the forecast
+        const newCol = $("<div>").attr("class", "col");
+        $("#fiveDay").append(newCol);
+        //create new card to display forecast info for each day
+        const newCard = $("<div>").attr("class", "card text-white bg-primary");
+        newCol.append(newCard);
+        //create header for new card and display 
+        var cardHeader = $("<div>").attr("class", "card-header").text(moment(forecast.list[i].dt, "X").format("MMM Do"));
+        newCard.append(cardHeader);
+        //append icon for weather to cards
+        var cardImg = $("<img>").attr("class", "card-img-top").attr("src", "https://openweathermap.org/img/wn/" + forecast.list[i].weather[0].icon + "@2x.png");
+        newCard.append(cardImg);
+        //new div to hold info for text/humidity on each card of forecast
+        var bodyDiv = $("<div>").attr("class", "card-body");
+        newCard.append(bodyDiv);
+        //
+        bodyDiv.append($("<p>").attr("class", "card-text").html("Temp: " + forecast.list[i].main.temp + " °F"));
+        bodyDiv.append($("<p>").attr("class", "card-text").text("Humidity: " + forecast.list[i].main.humidity + "%"));
+    }
+
+  };
+});
 }
 
 // function saveCitySearch ()

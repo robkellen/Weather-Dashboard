@@ -102,13 +102,18 @@ function getCurrent(city) {
     console.log(queryURL);
     //console logging resulting object
     console.log(response);
-
-    //set current city and append to HTML
+    
     const city = response.name;
-    $("#currentCity").text(city);
-    //set current date and append to HTML
     const todayDate = moment().format(" (M-D-YYYY) ");
-    $("#currentDate").text(todayDate);
+    //create div to hold daily data
+    const currForecast = $("<div>").attr("class", "card");
+    $("#mainRight").append(currForecast);
+    //add location & date to card header
+    $("<div>").attr("class", "card-header");
+
+    const cardRow = $("<div>").attr("class", "row");
+    currForecast.append(cardRow);
+    
     //variable for weather icon based on current conditions
     const iconURL =
       "https://openweathermap.org/img/wn/" +
@@ -118,9 +123,15 @@ function getCurrent(city) {
     const iconDiv = $("<div>")
       .attr("class", "col-md-3")
       .append($("<img>").attr("src", iconURL).attr("class", "card-img"));
-    $("#iconHere").append(iconDiv);
+    $("#cardRow").append(iconDiv);
+
+    const textDiv = $("<div>").attr("class", "col-md-8")
+    const cardBody = $("<div>").attr("class", "card-body");
+    textDiv.append(cardBody);
+    cardBody.append($("<h3>").attr("class", "card-title").text(city + todayDate));
+
     //set weather info to HTML
-    $("#currentHeader").append("<ul>").attr("id", "currentStats");
+    cardBody.append("<ul>").attr("id", "currentStats");
     const temperature = $("<li>").text(
       "Temperature: " + response.main.temp + " °F"
     );
@@ -244,7 +255,19 @@ function getForecast(city) {
 
 function clear() {
   //clear previous weather info
-  $("#rightMain").empty();
+  $("#mainRight").empty();
+}
+
+var loc;
+function saveCitySearch() {
+  //check local storage.  if none add this city to new array
+  if (savedLocations === null) {
+    savedLocations = [loc];
+  } else if (savedLocations.indexOf(loc) === -1) {
+    savedLocations.push(loc);
+  }
+  localStorage.setItem("searchedCities", JSON.stringify(savedLocations));
+  showPrevious();
 }
 
 $("#findCityBtn").on("click", function (event) {
@@ -262,17 +285,6 @@ $("#findCityBtn").on("click", function (event) {
   }
 });
 
-var loc;
-function saveCitySearch() {
-  //if none add this city to new array
-  if (savedLocations === null) {
-    savedLocations = [loc];
-  } else if (savedLocations.indexOf(loc) === -1) {
-    savedLocations.push(loc);
-  }
-  localStorage.setItem("searchedCities", JSON.stringify(savedLocations));
-  showPrevious();
-}
 
 $("#d")
 

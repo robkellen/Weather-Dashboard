@@ -11,8 +11,10 @@ function startPoint() {
   const savedLocations = JSON.parse(localStorage.getItem(searchedCities));
   var lastSearch;
   if (savedLocations) {
-    //
+    //get last city searched and display it
     currentLoc = savedLocations(savedLocations.length - 1);
+    showPrevious();
+    getCurrent(currentLoc);
   } else {
     //if user declines provide weather info for Cave Creek, AZ
     if (!navigator.geolocation) {
@@ -93,10 +95,10 @@ function getCurrent(city) {
   $.ajax({
     url: queryURL,
     method: "GET",
-    error: function () {
-      savedLocations.splice(savedLocations.indexOf(city), 1);
-      localStorage.setItem("searchedCities", JSON.stringify(savedLocations));
-    },
+    // error: function () {
+    //   savedLocations.splice(savedLocations.indexOf(city), 1);
+    //   localStorage.setItem("searchedCities", JSON.stringify(savedLocations));
+    // },
   }).then(function (response) {
     //console logging queryURL
     console.log(queryURL);
@@ -199,7 +201,6 @@ function getCurrent(city) {
     getForecast(response.id);
   });
 }
-
 function getForecast(city) {
   const queryURL3 =
     "http://api.openweathermap.org/data/2.5/forecast?id=" +
@@ -257,13 +258,14 @@ function getForecast(city) {
   });
 }
 
+
 function clear() {
   //clear previous weather info
   $("#mainRight").empty();
 }
 
 var loc;
-function saveCitySearch() {
+function saveCitySearch(loc) {
   //check local storage.  if none add this city to new array
   if (savedLocations === null) {
     savedLocations = [loc];
@@ -285,8 +287,12 @@ $("#findCityBtn").on("click", function (event) {
     currentLoc = loc;
     saveCitySearch(loc);
 
+    $("#cityInput").val("");
+
+    getCurrent(loc)
+
   }
-  getCurrent(city);
+  
 });
 
 

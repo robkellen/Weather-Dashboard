@@ -108,17 +108,19 @@ function getCurrent(city) {
     const addRow = $("<div>")
       .attr("class", "row card")
       .attr("id", "currentRow");
-      $("#containerRight").append(addRow);
+    $("#containerRight").append(addRow);
     //create div to hold daily data
-    const currForecast = $("<div>").attr("class", "col");
+    const currForecast = $("<div>")
+      .attr("class", "col")
+      .attr("id", "currForecastCol");
     addRow.append(currForecast);
     //add location & date to card header
-    const cardHead = $("<div>")
-      .attr("class", "card-header")
-      .attr("id", "cardHeader");
-    currForecast.append(cardHead);
-    const cityHead = $("<h5>").text(city);
-    cardHead.append(cityHead);
+    // const cardHead = $("<div>")
+    //   .attr("class", "card-header")
+    //   .attr("id", "cardHeader");
+    // currForecast.append(cardHead);
+    // const cityHead = $("<h5>").text("");
+    // cardHead.append(cityHead);
 
     const cardRow = $("<div>").attr("class", "row");
     currForecast.append(cardRow);
@@ -274,7 +276,6 @@ function clear() {
   //clear previous weather info
   $("#containerRight").empty();
 }
-
 
 function saveCitySearch(loc) {
   //check local storage.  if none add this city to new array

@@ -24,6 +24,8 @@
   padding-top: 10px;
   background-color: rgb(241, 240, 240);
   height: 100vh;
+  padding-left: 50px;
+  padding-right: 50px;
 }
 
 #city {
@@ -40,7 +42,7 @@ li {
 
 #mainRight {
   margin-top: 0px;
-  padding-left: 25px;
+  padding-left: 5px;
 }
 
 #todayForecast {
@@ -53,4 +55,9 @@ li {
 
 .uvindex {
   padding: 5px;
+}
+
+#currForecastCol {
+  padding-left: 0;
+  padding-right: 0;
 }

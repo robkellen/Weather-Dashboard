@@ -8,7 +8,7 @@ function geoLocation() {
 
 function startPoint() {
   //check local storage for previously searched and stored locations
-  const savedLocations = JSON.parse(localStorage.getItem("weathercities"));
+  savedLocations = JSON.parse(localStorage.getItem("weathercities"));
   var lastSearch;
   if (savedLocations) {
     //get last city searched and display it
@@ -81,8 +81,6 @@ function showPrevious() {
 
 const apiKey = "858f8ba5cfd6fd435f1cd0d521850b4d";
 
-function temperature() {}
-
 function getCurrent(city) {
   const apiKey = "858f8ba5cfd6fd435f1cd0d521850b4d";
   const queryURL =
@@ -95,8 +93,9 @@ function getCurrent(city) {
     url: queryURL,
     method: "GET",
     error: function () {
-      savedLocations.splice(savedLocations.indexOf(location), 1);
-      localStorage.setItem("city", JSON.stringify(savedLocations));
+      savedLocations.splice(savedLocations.indexOf(city), 1);
+      localStorage.setItem("weathercities", JSON.stringify(savedLocations));
+      startPoint();
     },
   }).then(function (response) {
     //console logging queryURL
@@ -227,7 +226,7 @@ function getForecast(location) {
 
     const newRow = $("<div>").attr("id", "#fiveDay").attr("class", "row");
     $("#containerRight").append(newRow);
-    
+
     for (let i = 0; i < forecast.list.length; i++) {
       //start for loop at index 0 of forecast list and search for upcoming dates at time of 15:00
       if (forecast.list[i].dt_txt.indexOf("15:00:00") !== -1) {
@@ -276,7 +275,7 @@ function clear() {
   $("#containerRight").empty();
 }
 
-var loc;
+
 function saveCitySearch(loc) {
   //check local storage.  if none add this city to new array
   if (savedLocations === null) {
@@ -284,7 +283,7 @@ function saveCitySearch(loc) {
   } else if (savedLocations.indexOf(loc) === -1) {
     savedLocations.push(loc);
   }
-  localStorage.setItem("city", JSON.stringify(savedLocations));
+  localStorage.setItem("weathercities", JSON.stringify(savedLocations));
   showPrevious();
 }
 
@@ -304,7 +303,7 @@ $("#findCityBtn").on("click", function (event) {
     getCurrent(loc);
   }
 
-  $(document).on("click", "loc-btn", function () {
+  $(document).on("click", "#locationButtons", function () {
     clear();
     city = $(this).text();
     showPrevious();

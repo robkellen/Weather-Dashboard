@@ -1,5 +1,5 @@
 var savedLocations = [];
-var searchedCities;
+var city;
 
 //ask user to allow access to location
 function geoLocation() {
@@ -8,15 +8,15 @@ function geoLocation() {
 
 function startPoint() {
   //check local storage for previously searched and stored locations
-  const savedLocations = JSON.parse(localStorage.getItem(searchedCities));
+  const savedLocations = JSON.parse(localStorage.getItem("weathercities"));
   var lastSearch;
   if (savedLocations) {
     //get last city searched and display it
-    currentLoc = savedLocations(savedLocations.length - 1);
+    city = savedLocations[savedLocations.length - 1];
     showPrevious();
-    getCurrent(currentLoc);
+    getCurrent(city);
   } else {
-    //if user declines provide weather info for Cave Creek, AZ
+    //if user declines provide weather info for Chicago
     if (!navigator.geolocation) {
       getCurrent("Chicago");
     } else {
@@ -24,37 +24,6 @@ function startPoint() {
     }
   }
 }
-
-function showPrevious() {
-  //show most recent searched city's info
-  if (savedLocations) {
-    $("#prevSearches").empty();
-
-    const cityBtns = $("<div>").attr("class", "list-group");
-    //create new list item of a button for city searched.
-    for (let i = 0; i < savedLocations.length; i++) {
-      const locButton = $("<a>")
-        .attr("href", "#")
-        .attr("id", "locationButtons")
-        .text(savedLocations[i]);
-      if (savedLocations[i] == currentLoc) {
-        locButton.attr(
-          "class",
-          "list-group-item list-group-item-action active"
-        );
-      } else {
-        locButton.attr("class", "list-group-item list-group-item-action");
-      }
-      //place current search button at top of list
-      cityBtns.prepend(locButton);
-      //append to HTML
-      $("#prevSearches").append(cityBtns);
-    }
-  }
-}
-
-const apiKey = "858f8ba5cfd6fd435f1cd0d521850b4d";
-
 function allowed(position) {
   //obtaining info for lat/long
   const lat = position.coords.latitude;
@@ -82,6 +51,36 @@ function denied() {
   getCurrent(city);
 }
 
+function showPrevious() {
+  //show most recent searched city's info
+  if (savedLocations) {
+    $("#prevSearches").empty();
+
+    const cityBtns = $("<div>").attr("class", "list-group");
+    //create new list item of a button for city searched.
+    for (let i = 0; i < savedLocations.length; i++) {
+      const locButton = $("<a>")
+        .attr("href", "#")
+        .attr("id", "locationButtons")
+        .text(savedLocations[i]);
+      if (savedLocations[i] == city) {
+        locButton.attr(
+          "class",
+          "list-group-item list-group-item-action active"
+        );
+      } else {
+        locButton.attr("class", "list-group-item list-group-item-action");
+      }
+      //place current search button at top of list
+      cityBtns.prepend(locButton);
+      //append to HTML
+      $("#prevSearches").append(cityBtns);
+    }
+  }
+}
+
+const apiKey = "858f8ba5cfd6fd435f1cd0d521850b4d";
+
 function temperature() {}
 
 function getCurrent(city) {
@@ -95,30 +94,36 @@ function getCurrent(city) {
   $.ajax({
     url: queryURL,
     method: "GET",
-    // error: function () {
-    //   savedLocations.splice(savedLocations.indexOf(city), 1);
-    //   localStorage.setItem("searchedCities", JSON.stringify(savedLocations));
-    // },
+    error: function () {
+      savedLocations.splice(savedLocations.indexOf(location), 1);
+      localStorage.setItem("city", JSON.stringify(savedLocations));
+    },
   }).then(function (response) {
     //console logging queryURL
     console.log(queryURL);
     //console logging resulting object
     console.log(response);
-    
-    const city = response.name;
+
     const todayDate = moment().format(" (M-D-YYYY) ");
+    //create new row
+    const addRow = $("<div>")
+      .attr("class", "row card")
+      .attr("id", "currentRow");
+      $("#containerRight").append(addRow);
     //create div to hold daily data
     const currForecast = $("<div>").attr("class", "col");
-    $("#currentRow").append(currForecast);
+    addRow.append(currForecast);
     //add location & date to card header
-    const cardHead = $("<div>").attr("class", "card-header").attr("id", "cardHeader");
+    const cardHead = $("<div>")
+      .attr("class", "card-header")
+      .attr("id", "cardHeader");
     currForecast.append(cardHead);
     const cityHead = $("<h5>").text(city);
     cardHead.append(cityHead);
 
     const cardRow = $("<div>").attr("class", "row");
     currForecast.append(cardRow);
-    
+
     //variable for weather icon based on current conditions
     const iconURL =
       "https://openweathermap.org/img/wn/" +
@@ -130,11 +135,15 @@ function getCurrent(city) {
       .append($("<img>").attr("src", iconURL).attr("class", "card-img"));
     cardRow.append(iconDiv);
 
-    const textDiv = $("<div>").attr("class", "col-md-8")
+    const textDiv = $("<div>").attr("class", "col-md-8");
     cardRow.append(textDiv);
     const cardBody = $("<div>").attr("class", "card-body");
     textDiv.append(cardBody);
-    cardBody.append($("<h3>").attr("class", "card-title").text(city + todayDate));
+    cardBody.append(
+      $("<h3>")
+        .attr("class", "card-title")
+        .text(city + todayDate)
+    );
 
     //set weather info to HTML
     cardBody.append("<ul>").attr("id", "currentStats");
@@ -201,10 +210,11 @@ function getCurrent(city) {
     getForecast(response.id);
   });
 }
-function getForecast(city) {
+
+function getForecast(location) {
   const queryURL3 =
     "http://api.openweathermap.org/data/2.5/forecast?id=" +
-    city +
+    location +
     "&appid=" +
     apiKey +
     "&units=imperial";
@@ -215,12 +225,15 @@ function getForecast(city) {
   }).then(function (forecast) {
     console.log(forecast);
 
+    const newRow = $("<div>").attr("id", "#fiveDay").attr("class", "row");
+    $("#containerRight").append(newRow);
+    
     for (let i = 0; i < forecast.list.length; i++) {
       //start for loop at index 0 of forecast list and search for upcoming dates at time of 15:00
       if (forecast.list[i].dt_txt.indexOf("15:00:00") !== -1) {
         //create new column for each day of the forecast
         const newCol = $("<div>").attr("class", "col");
-        $("#fiveDay").append(newCol);
+        newRow.append(newCol);
         //create new card to display forecast info for each day
         const newCard = $("<div>").attr("class", "card text-white bg-primary");
         newCol.append(newCard);
@@ -258,10 +271,9 @@ function getForecast(city) {
   });
 }
 
-
 function clear() {
   //clear previous weather info
-  $("#mainRight").empty();
+  $("#containerRight").empty();
 }
 
 var loc;
@@ -272,7 +284,7 @@ function saveCitySearch(loc) {
   } else if (savedLocations.indexOf(loc) === -1) {
     savedLocations.push(loc);
   }
-  localStorage.setItem("searchedCities", JSON.stringify(savedLocations));
+  localStorage.setItem("city", JSON.stringify(savedLocations));
   showPrevious();
 }
 
@@ -280,23 +292,25 @@ $("#findCityBtn").on("click", function (event) {
   //prevent default refresh
   event.preventDefault();
   //take value from user input
-  const loc = $("#cityInput").val().trim();
+  var loc = $("#cityInput").val().trim();
   if (loc !== "") {
     //clear previous forecast data
     clear();
-    currentLoc = loc;
+    city = loc;
     saveCitySearch(loc);
 
     $("#cityInput").val("");
 
-    getCurrent(loc)
-
+    getCurrent(loc);
   }
-  
+
+  $(document).on("click", "loc-btn", function () {
+    clear();
+    city = $(this).text();
+    showPrevious();
+    getCurrent(city);
+  });
 });
-
-
-
 
 // function saveCitySearch ()
 
